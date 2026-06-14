@@ -1,0 +1,13 @@
+/* Эффект стеклянного размытия для карточек */
+.crypto-card {
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+}
+
+/* Плавное увеличение карточки при наведении */
+.crypto-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(52, 211, 153, 0.4);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
