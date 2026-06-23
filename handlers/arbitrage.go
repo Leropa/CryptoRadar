@@ -4,8 +4,6 @@ import (
 	"net/http"
 )
 
-// LiveRateResponse описывает формат данных для одной монеты.
-// Теги json:"..." обязательны, чтобы JavaScript в app.js смог прочитать поля.
 type LiveRateResponse struct {
 	Name         string  `json:"name"`
 	Symbol       string  `json:"symbol"`
@@ -15,12 +13,9 @@ type LiveRateResponse struct {
 	Spread       float64 `json:"spread"`
 }
 
-// GetArbitrageData формирует список монет и отправляет его на фронтенд
 func GetArbitrageData(w http.ResponseWriter, r *http.Request) {
-	// Создаем слайс (массив) для хранения результатов
 	var results []LiveRateResponse
 
-	// 1. Забиваем данные для Bitcoin
 	btc := LiveRateResponse{
 		Name:         "Bitcoin",
 		Symbol:       "BTC",
@@ -31,7 +26,6 @@ func GetArbitrageData(w http.ResponseWriter, r *http.Request) {
 	}
 	results = append(results, btc)
 
-	// 2. Забиваем данные для Ethereum
 	eth := LiveRateResponse{
 		Name:         "Ethereum",
 		Symbol:       "ETH",
@@ -42,7 +36,6 @@ func GetArbitrageData(w http.ResponseWriter, r *http.Request) {
 	}
 	results = append(results, eth)
 
-	// 3. Забиваем данные для Solana
 	sol := LiveRateResponse{
 		Name:         "Solana",
 		Symbol:       "SOL",
@@ -53,6 +46,5 @@ func GetArbitrageData(w http.ResponseWriter, r *http.Request) {
 	}
 	results = append(results, sol)
 
-	// Отправляем готовый слайс через дженерик-функцию
 	RespondWithJSON(w, http.StatusOK, results)
 }

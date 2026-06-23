@@ -10,6 +10,12 @@ import (
 
 var DB *sql.DB
 
+type TickerRate struct {
+	Exchange string
+	Coin     string
+	Price    float64
+}
+
 func ConnectDB() {
 	var err error
 
@@ -42,8 +48,7 @@ func ConnectDB() {
 }
 
 func SaveRate(exchange, coin string, price float64) {
-	query := `INSERT INTO crypto (exchange, coin, price)
-	VALUES ($1, $2, $3)`
+	query := `INSERT INTO crypto (exchange, coin, price) VALUES ($1, $2, $3)`
 
 	_, err := DB.Exec(query, exchange, coin, price)
 	if err != nil {
@@ -51,6 +56,34 @@ func SaveRate(exchange, coin string, price float64) {
 	}
 }
 
-//func GetLatestRates() ([]LiveRateResponse, error) {
-// Твой код
-//}
+func GetLatestRates() ([]TickerRate, error) {
+
+	query := `
+		SELECT DISTINCT ON (exchange, coin) exchange, coin, price 
+		FROM crypto 
+		ORDER BY exchange, coin, updated_at DESC;
+	`
+
+	rows, err := DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var rates []TickerRate
+
+	for rows.Next() {
+		var r TickerRate
+		err := rows.Scan(&r.Exchange, &r.Coin, &r.Price)
+		if err != nil {
+			return nil, err
+		}
+		rates = append(rates, r)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return rates, nil
+}
